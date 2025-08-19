@@ -2,12 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:service_provider_finder/ViewModel/MapSearchViewModel.dart';
+import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
+
+import '../models/Resturents.dart';
 
 
-class MapControllerforMap extends GetxController{
-  MapSearchViewModel mapSearchGoogleViewModel = Get.find();
+class MapViewModel extends GetxController{
+  ResturentListViewModel mapSearchGoogleViewModel = Get.find();
   MapController mapController = MapController();
+  RxBool showcard = false.obs;
+   Rx<Resturents?> SelectedResturent  = Rx<Resturents?>(null);
+
+
+
+
+  void onInit(){
+    super.onInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pointToTargets();
+    });
+  }
+  void detail(Resturents resturentDetail){
+    SelectedResturent.value= resturentDetail;
+  }
+
   void pointToTargets(){
     if(mapSearchGoogleViewModel.SearchList.isEmpty){
       return ;

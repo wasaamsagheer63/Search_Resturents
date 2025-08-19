@@ -1,339 +1,308 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:service_provider_finder/View/resturentlist.dart';
-import 'package:service_provider_finder/ViewModel/MapSearchViewModel.dart';
+import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
 
-class ApplyFilteres extends StatefulWidget {
-  const ApplyFilteres({super.key});
-
+class ApplyFilteres extends GetView<ResturentListViewModel> {
   @override
-  State<ApplyFilteres> createState() => _ApplyFilteresState();
-}
-
-class _ApplyFilteresState extends State<ApplyFilteres> {
-  late final MapSearchViewModel mapSearchViewModel;
-bool tuner =true;
-  @override
-  void initState(){
-    super.initState();
-    mapSearchViewModel = Get.find();
-  }
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        appBar: AppBar(
+          title: Text(
+            "Filters",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Get.toNamed("/ResturentList");
+            },
+            icon: Icon(Icons.chevron_left),
+          ),),
+
+        body: Obx(() => Padding(
+          padding: const EdgeInsets.all(12.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: 30,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 70,
-                children: [
-                  IconButton(onPressed: (){
-                    setState(() {
-                      Get.toNamed("/ResturentList");
-                    });
-                  }, icon: Icon(Icons.chevron_left)),
-                  Text("Filters",style:TextStyle(fontSize: 20,fontWeight: FontWeight.bold))
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Column(crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Price Range",style: TextStyle(fontWeight: FontWeight.w700)),
-                      TextButton(onPressed: (){
-                        setState(() {
-                          mapSearchViewModel.clearPrice();
-                        });
-                      }, child: Text("Reset",style: TextStyle(color:Colors.grey,fontWeight: FontWeight.w600,fontSize: 12),))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 1),
-                    child: Obx(() {
-                      return mapSearchViewModel.ListPrice_Range.isEmpty
-                          ? Center(child: CircularProgressIndicator())
-                          : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: mapSearchViewModel.ListPrice_Range.map(
-                                (item) => Container(
-                              margin: EdgeInsets.only(left: 8),
+              children: [
+                SizedBox(height: 8),
+                Expanded(
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 200,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                            "Select Price Range",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: controller.SeletedPriceType.isNotEmpty
+                                                  ? Color.fromRGBO(
+                                                13,
+                                                161,
+                                                3,
+                                                0.9372549019607843,
+                                              )
+                                                  : Colors.grey,
+                                            ),
+                                          ),
+                                    Column(children:controller.ListPrice_Range.value.map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedPriceType.contains(item), ()=> controller.applyPricefilter(item)
 
-                              child: InkWell(
-                                  onTap: (){
-                                    setState(() {
-                                      mapSearchViewModel.applyPricefilter(item);
-                                    });      },
-                                  child:mapSearchViewModel.SeletedPriceType.contains(item)?Chip(
-                                    label: Text(
-                                      item,
-                                      style: TextStyle(fontSize: 12,color:Color.fromRGBO(
-                                        2,
-                                        97,
-                                        2,
-                                        0.9372549019607843,
-                                      ) ),
-                                    ),
-                                    backgroundColor:Color.fromRGBO(
-                                      109,
-                                      251,
-                                      109,
-                                      0.9372549019607843,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(90),
-                                        side: BorderSide(width: 1,color:Color.fromRGBO(
-                                          2,
-                                          133,
-                                          2,
-                                          0.9372549019607843,
-                                        ))
-                                    ),
-                                  ):Chip(
-                                    label: Text(
-                                      item,
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    backgroundColor:Color.fromRGBO(
-                                      234,
-                                      236,
-                                      234,
-                                      0.9372549019607843,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(90),
-                                    ),
-                                  )
-
+                                          ));}).toList())
+                                  ],
+                                ),
                               ),
                             ),
-                          ).toList(),
-                        ),
-                      );
-                    }),
-                  )
-                ],
-              ),
+                            SizedBox(width: 30),
+                            Container(
+                              width: 200,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Select Area",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: controller.SeletedAreaType.isNotEmpty
+                                                ? Color.fromRGBO(
+                                              13,
+                                              161,
+                                              3,
+                                              0.9372549019607843,
+                                            )
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () => controller.showArea(),
+                                          child: Text(controller.showMoreAreas.value? "Show less":"Show more",
+                                            style: TextStyle(fontSize: 13,color:Colors.green),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  Column(children:controller.showMoreAreas.value ? controller.ListArea.value.map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedAreaType.contains(item),()=>controller.applyAreafilter(item)));}).toList():
+                                    controller.ListArea.take(4).map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedAreaType.contains(item),()=>controller.applyAreafilter(item)));}).toList())
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 30),
+                            Container(
+                              width: 200,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Select Dining Style",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: controller.SeletedDiningType.isNotEmpty
+                                            ? Color.fromRGBO(
+                                          13,
+                                          161,
+                                          3,
+                                          0.9372549019607843,
+                                        )
+                                            : Colors.grey,
+                                      ),
+                                    ),
+                                    Column(children:controller.ListDining_Style.value.map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedDiningType.contains(item),()=>controller.applyDinningfilter(item)));}).toList())
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 30),
+                            Container(
+                              width: 200,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                      Text(
+                                      "Select Rating",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: controller.SeletedRatingType.isNotEmpty
+                                            ? Color.fromRGBO(
+                                          13,
+                                          161,
+                                          3,
+                                          0.9372549019607843,
+                                        )
+                                            : Colors.grey,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () => controller.showRating(),
+                                      child: Text(controller.showMoreRating.value? "Show less":"Show more",
+                                        style: TextStyle(fontSize: 13,color:Colors.green),
+                                      ),
+                                    ),
+                                  ],
+                                    ),
+                                    Column(children:controller.showMoreRating.value ? controller.ListRating.value.map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedRatingType.contains(item),()=>controller.applyRatingfilter(item),isRating: true));}).toList():
+                                    controller.ListRating.take(4).map((item) {
+                                      return Padding(
+                                          padding: EdgeInsets.all(5),
+                                          child:checkBoxtitleComponent(item, controller.SeletedRatingType.contains(item),()=>controller.applyRatingfilter(item),isRating: true));}).toList())
 
-              Container(
-                margin: EdgeInsets.only(top:5),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Area",style: TextStyle(fontWeight: FontWeight.w700)),
-                    TextButton(onPressed: (){
-                      setState(() {
-                        mapSearchViewModel.clearArea();
-
-                      });                    }, child: Text("Reset",style: TextStyle(color:Colors.grey,fontWeight: FontWeight.w600,fontSize: 12),))
-                  ],
+                                  ],
+                                ),
+                              ),)
+                          ])),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 1),
-                child: Obx(() {
-                  return mapSearchViewModel.ListArea.isEmpty
-                      ? Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: mapSearchViewModel.ListArea.map(
-                            (item) => Container(
-                          margin: EdgeInsets.only(left: 8),
-
-                          child: InkWell(
-                              onTap: (){
-                                setState(() {
-                                  mapSearchViewModel.applyAreafilter(item);
-                                });      },
-                              child:mapSearchViewModel.SeletedAreaType.contains(item)?Chip(
-                                label: Text(
-                                  item,
-                                  style: TextStyle(fontSize: 12,color:Color.fromRGBO(
-                                    2,
-                                    97,
-                                    2,
-                                    0.9372549019607843,
-                                  ) ),
-                                ),
-                                backgroundColor:Color.fromRGBO(
-                                  109,
-                                  251,
-                                  109,
-                                  0.9372549019607843,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(90),
-                                    side: BorderSide(width: 1,color:Color.fromRGBO(
-                                      2,
-                                      133,
-                                      2,
-                                      0.9372549019607843,
-                                    ))
-                                ),
-                              ):Chip(
-                                label: Text(
-                                  item,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                backgroundColor:Color.fromRGBO(
-                                  234,
-                                  236,
-                                  234,
-                                  0.9372549019607843,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(90),
-                                ),
-                              )
-
-                          ),
-                        ),
-                      ).toList(),
-                    ),
-                  );
-                }),
-              ),
-              Container(
-                margin: EdgeInsets.only(top:5),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text("Dinning Style",style: TextStyle(fontWeight: FontWeight.w700)),
-                    TextButton(onPressed: (){
-                      setState(() {
-                        mapSearchViewModel.clearDining();
-                      });
-                    }, child: Text("Reset",style: TextStyle(color:Colors.grey,fontWeight: FontWeight.w600,fontSize: 12),))
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top:5),
-                child: Obx(() {
-                  return mapSearchViewModel.ListDining_Style.isEmpty
-                      ? Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: mapSearchViewModel.ListDining_Style.map(
-                            (item) => Container(
-                          margin: EdgeInsets.only(left: 8),
-
-                          child: InkWell(
-                              onTap: (){
-                                setState(() {
-                                  mapSearchViewModel.applyDinningfilter(item);
-                                });
-                              },
-                              child:mapSearchViewModel.SeletedDiningType.contains(item)?Chip(
-                                label: Text(
-                                  item,
-                                  style: TextStyle(fontSize: 12,color:Color.fromRGBO(
-                                    2,
-                                    97,
-                                    2,
-                                    0.9372549019607843,
-                                  ) ),
-                                ),
-                                backgroundColor:Color.fromRGBO(
-                                  109,
-                                  251,
-                                  109,
-                                  0.9372549019607843,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(90),
-                                    side: BorderSide(width: 1,color:Color.fromRGBO(
-                                      2,
-                                      133,
-                                      2,
-                                      0.9372549019607843,
-                                    ))
-                                ),
-                              ):Chip(
-                                label: Text(
-                                  item,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                backgroundColor:Color.fromRGBO(
-                                  234,
-                                  236,
-                                  234,
-                                  0.9372549019607843,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(90),
-                                ),
-                              )
-
+                    InkWell(
+                      child: Stack(
+                        children: [
+                          Text(
+                            "Clear all",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color.fromRGBO(
+                                96,
+                                94,
+                                94,
+                                0.9372549019607843,
+                              ),
+                            ),
                           ),
-                        ),
-                      ).toList(),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 18, 0, 0),
+                            width: 58,
+                            height: 2,
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(
+                                96,
+                                94,
+                                94,
+                                0.9372549019607843,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: (){
+                        controller.clearall();
+                      },
                     ),
-                  );
-                }),
-              ),
-        SizedBox(height: 100,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        mapSearchViewModel.clearall();
-                      });
-                    },
-                    child: Stack(
+                    Stack(
                       children: [
-                        Text("Clear all",style: TextStyle(fontWeight: FontWeight.w700,color: Color.fromRGBO(
-                            96, 94, 94, 0.9372549019607843)),),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                          width: 58,
-                          height: 2,
-                          decoration: BoxDecoration(
-                              color:Color.fromRGBO(
-                                  96, 94, 94, 0.9372549019607843)
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 5),
+                            child: Text(
+                              " Find Resturent",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
-                        )
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromRGBO(
+                              13,
+                              161,
+                              3,
+                              0.9372549019607843,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(11, 15, 0, 0),
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  Stack(children: [
-                    ElevatedButton(onPressed: (){
-                      Get.toNamed("/ResturentList");
-                    }, child: Container(
-                        margin: EdgeInsets.only(left: 5),
-                        child: Text(" Find Resturent",style: TextStyle(color:Colors.white,fontSize: 12),)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(13, 161, 3, 0.9372549019607843),
-                      ),),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(11, 15, 0, 0),
-                        child: Icon(Icons.location_on,color:Colors.white,size: 16,)),
+                  ],
+                ),
 
-                  ]
-                    ,)
-                ],
-              )
-            ],
-          ),
+
+              ]),
+        )));
+
+  }
+  @override
+
+  Widget checkBoxtitleComponent(
+      String item,
+      bool isSelected,
+      VoidCallback onChanged,
+  {bool isRating = false}
+      ){
+    return Container(
+
+      margin: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isSelected ? Colors.green : Colors.grey,
         ),
+      ),
+      child: CheckboxListTile(
+        fillColor:WidgetStateProperty.all(Colors.white),
+        checkColor: Colors.green,
+        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+        title: isRating? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children:[ Icon(isSelected ?Icons.star:Icons.star_border_outlined,color: isSelected?Colors.yellow:Colors.grey,),
+          Text(item, style: TextStyle(fontSize: 12,color: isSelected ? Colors.green : Colors.grey),),
+        ])
+            :Text(item, style: TextStyle(fontSize: 12,color: isSelected ? Colors.green : Colors.grey),),
+        value: isSelected,
+        onChanged: (value) => onChanged()
       ),
     );
   }
+
+
 }
