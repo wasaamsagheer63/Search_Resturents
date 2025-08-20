@@ -30,7 +30,7 @@ class MapViewModel extends GetxController{
       return ;
     }
     List<LatLng> markPositions = restaurantListViewModel.searchList.map((map){
-      return LatLng(map.geoloc.lat.toDouble(), map.geoloc.lng.toDouble());
+      return LatLng(map.geoloc.lat, map.geoloc.lng);
     }).toList();
 
     if(markPositions.length ==1){
