@@ -2,40 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
-
-import '../models/Resturents.dart';
+import 'package:service_provider_finder/view_model/resturent_list_view_model.dart';
+import '../models/resturents.dart';
 
 
 class MapViewModel extends GetxController{
-  ResturentListViewModel resturentListViewModel = Get.find();
+  RestaurantListViewModel restaurantListViewModel = Get.find();
   MapController mapController = MapController();
   RxBool showcard = false.obs;
-   Rx<Resturents?> SelectedResturent  = Rx<Resturents?>(null);
+   Rx<Restaurants?> Selectedrestaurant  = Rx<Restaurants?>(null);
 
 
 
 
   void onInit(){
     super.onInit();
-    resturentListViewModel.SearchList.listen((_) {
+    restaurantListViewModel.searchList.listen((_) {
       pointToTargets();
     });
   }
-  void detail(Resturents resturentDetail){
-    SelectedResturent.value= resturentDetail;
+  void detail(Restaurants restaurantDetail){
+    Selectedrestaurant.value= restaurantDetail;
   }
 
   void pointToTargets(){
-    if(resturentListViewModel.SearchList.isEmpty){
+    if(restaurantListViewModel.searchList.isEmpty){
       return ;
     }
-    List<LatLng> markPositions = resturentListViewModel.SearchList.map((map){
+    List<LatLng> markPositions = restaurantListViewModel.searchList.map((map){
       return LatLng(map.geoloc.lat.toDouble(), map.geoloc.lng.toDouble());
     }).toList();
 
     if(markPositions.length ==1){
-      mapController.move(markPositions.first,15.0);
+      mapController.move(markPositions.first,12.0);
     }
     else{
          double minlat=  markPositions.first.latitude;

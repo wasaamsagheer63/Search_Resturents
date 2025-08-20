@@ -1,6 +1,6 @@
   class GeoLoc{
-    num lat;
-    num lng;
+    double lat;
+    double lng;
 
     GeoLoc(this.lat, this.lng);
 

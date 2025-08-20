@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import '../models/resturents.dart';
+import '../view_model/resturent_list_view_model.dart';
 
-import '../ViewModel/ResturentListViewModel.dart';
-import '../models/Resturents.dart';
-
-class ListDisplay extends GetView<ResturentListViewModel> {
-  Resturents resturent;
+class ListDisplay extends GetView<RestaurantListViewModel> {
+  Restaurants restaurant;
   int index;
 
 
-  ListDisplay(this.resturent, this.index);
+  ListDisplay(this.restaurant, this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                        Html(
                         data:
                             controller.highlightedList[index]['_highlightResult']?['name']?['value'] ??
-                            resturent.Name,
+                            restaurant.Name,
                         style: {
                           "body": Style(
                             fontSize: FontSize(13),
@@ -48,7 +47,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                     children: [
                       Text("⭐"),
                       Text(
-                        resturent.Stars_count.toString(),
+                        restaurant.Stars_count.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -56,7 +55,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                       ),
                       SizedBox(width: 3),
                       Text(
-                        "(${resturent.Reviews_Count.toString()})",
+                        "(${restaurant.Reviews_Count.toString()})",
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 13,
@@ -68,7 +67,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                      spacing: 5,
                     children: [
                       Chip(
-                        label: Text(resturent.Food_Type),
+                        label: Text(restaurant.Food_Type),
                         labelStyle: TextStyle(
                           fontSize: 10,
                           color: Color.fromRGBO(
@@ -99,7 +98,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                           ),
                         ),
                       ),
-                      Text("${resturent.Price_Range}"),
+                      Text("${restaurant.Price_Range}"),
                     ],
                   ),
                              ] ),

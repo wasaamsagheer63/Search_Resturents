@@ -1,6 +1,6 @@
-import 'GeoLoc.dart';
+import 'geoLoc.dart';
 
-class Resturents{
+class Restaurants{
 String Name;
 String Food_Type;
 double Stars_count;
@@ -15,12 +15,12 @@ List<String> Payment_Options;
 String Reserve_Url;
 GeoLoc geoloc;
 
-Resturents(this.Name, this.Food_Type, this.Stars_count, this.Reviews_Count,
+Restaurants(this.Name, this.Food_Type, this.Stars_count, this.Reviews_Count,
     this.Price_Range, this.Dining_Style, this.Address, this.Area, this.City,
     this.Image_Url, this.Payment_Options, this.Reserve_Url, this.geoloc);
 
-static Resturents fromMap(Map<String, dynamic> map) {
-  return Resturents(
+static Restaurants fromMap(Map<String, dynamic> map) {
+  return Restaurants(
     map['name'] ?? "",
     map['food_type'] ?? "",
       (map['stars_count'] ?? 0.0).toDouble(),

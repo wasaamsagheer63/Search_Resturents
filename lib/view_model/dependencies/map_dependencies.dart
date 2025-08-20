@@ -1,15 +1,14 @@
 
 import 'package:get/get.dart';
-import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
-import 'package:service_provider_finder/ViewModel/MapViewModel.dart';
-
 import '../../Repository/algolia_repo.dart';
+import '../map_view_model.dart';
+import '../resturent_list_view_model.dart';
 
 class MapDependencies extends Bindings{
   @override
   void dependencies(){
     Get.put(AlgoliaRepository());
-    Get.put(ResturentListViewModel());
+    Get.put(RestaurantListViewModel());
     Get.put(MapViewModel());
 }
 }

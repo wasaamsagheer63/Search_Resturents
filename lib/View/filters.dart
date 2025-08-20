@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
 
-class ApplyFilteres extends GetView<ResturentListViewModel> {
+import '../view_model/resturent_list_view_model.dart';
+
+class ApplyFilteres extends GetView<RestaurantListViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +50,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: controller.SeletedPriceType.isNotEmpty
+                            color: controller.seletedPriceType.isNotEmpty
                                 ? Color.fromRGBO(
                               13,
                               161,
@@ -59,12 +60,12 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                                 : Colors.black,
                           ),
                         ),
-                        Column(children: controller.ListPrice_Range.value.map((
+                        Column(children: controller.listPriceRange.map((
                             item) {
                           return checkBoxtitleComponent(item,
-                              controller.SeletedPriceType.contains(
+                              controller.seletedPriceType.contains(
                                   item), () =>
-                                  controller.applyPricefilter(item)
+                                  controller.applyPriceFilter(item)
 
                           );
                         }).toList())
@@ -90,7 +91,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: controller.SeletedAreaType.isNotEmpty
+                                color: controller.seletedAreaType.isNotEmpty
                                     ? Color.fromRGBO(
                                   13,
                                   161,
@@ -112,18 +113,18 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                           ],
                         ),
                         Column(children: controller.showMoreAreas.value
-                            ? controller.ListArea.value.map((item) {
+                            ? controller.listArea.map((item) {
                           return checkBoxtitleComponent(item,
-                              controller.SeletedAreaType.contains(
+                              controller.seletedAreaType.contains(
                                   item), () =>
-                                  controller.applyAreafilter(item));
+                                  controller.applyAreaFilter(item));
                         }).toList()
                             :
-                        controller.ListArea.take(4).map((item) {
+                        controller.listArea.take(4).map((item) {
                           return checkBoxtitleComponent(item,
-                              controller.SeletedAreaType.contains(
+                              controller.seletedAreaType.contains(
                                   item), () =>
-                                  controller.applyAreafilter(item));
+                                  controller.applyAreaFilter(item));
                         }).toList())
                       ],
                     ),
@@ -145,7 +146,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: controller.SeletedDiningType.isNotEmpty
+                            color: controller.seletedDiningType.isNotEmpty
                                 ? Color.fromRGBO(
                               13,
                               161,
@@ -155,12 +156,12 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                                 : Colors.black,
                           ),
                         ),
-                        Column(children: controller.ListDining_Style.value.map((
+                        Column(children: controller.listDiningStyle.map((
                             item) {
                           return checkBoxtitleComponent(item,
-                              controller.SeletedDiningType.contains(
+                              controller.seletedDiningType.contains(
                                   item), () =>
-                                  controller.applyDinningfilter(item));
+                                  controller.applyDinningFilter(item));
                         }).toList())
                       ],
                     ),
@@ -185,7 +186,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: controller.SeletedRatingType.isNotEmpty
+                                        color: controller.seletedRatingType.isNotEmpty
                                             ? Color.fromRGBO(
                                           13,
                                           161,
@@ -207,17 +208,17 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
                                   ],
                                 ),
                                 Column(children: controller.showMoreRating.value
-                                    ? controller.ListRating.value.map((item) {
+                                    ? controller.listRating.map((item) {
                                   return checkBoxtitleComponent(item,
-                                      controller.SeletedRatingType.contains(item), () =>
-                                          controller.applyRatingfilter(item),
+                                      controller.seletedRatingType.contains(item), () =>
+                                          controller.applyRatingFilter(item),
                                    isRating: true);
                                 }).toList()
                                     :
-                                controller.ListRating.take(4).map((item) {
+                                controller.listRating.take(4).map((item) {
                                   return checkBoxtitleComponent(item,
-                                      controller.SeletedRatingType.contains(item), () =>
-                                          controller.applyRatingfilter(item),
+                                      controller.seletedRatingType.contains(item), () =>
+                                          controller.applyRatingFilter(item),
                                   isRating: true);
                                 }).toList())
                               ],
@@ -261,7 +262,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
     ],
     ),
     onTap: (){
-    controller.clearall();
+    controller.clearAll();
     },
     ),
     Stack(
@@ -273,7 +274,7 @@ class ApplyFilteres extends GetView<ResturentListViewModel> {
     child: Container(
     margin: EdgeInsets.only(left: 5),
     child: Text(
-    " Find Resturent",
+    " Find restaurant",
     style: TextStyle(
     color: Colors.white,
     fontSize: 12,

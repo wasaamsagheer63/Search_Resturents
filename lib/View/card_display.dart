@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
 
-import '../models/Resturents.dart';
+import '../models/resturents.dart';
+import '../view_model/resturent_list_view_model.dart';
 
-class CardDisplay extends GetView<ResturentListViewModel> {
-  Resturents resturent;
+class CardDisplay extends GetView<RestaurantListViewModel> {
+  Restaurants restaurant;
   int index;
 
 
-  CardDisplay(this.resturent,this.index);
+  CardDisplay(this.restaurant,this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                               ),
                             ),
                             Positioned(
-                              top: 42,
+                              top: 40,
                               left: 20,
                               child: CircleAvatar(
                                 radius: 30,
@@ -65,7 +65,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                               child: Html(
                                 data:
                                     controller.highlightedList[index]['_highlightResult']?['name']?['value'] ??
-                                        resturent.Name,
+                                        restaurant.Name,
                                 style: {
                                   "body": Style(
                                     fontSize: FontSize(14),
@@ -86,7 +86,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                               height: 35,
                               child: Chip(
                                 label: Text(
-                                  resturent.Food_Type,
+                                  restaurant.Food_Type,
                                   style: TextStyle(
                                     color: Color.fromRGBO(
                                       9,
@@ -101,8 +101,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                                 labelStyle: TextStyle(
                                   fontSize: 12,
                                 ),
-                                backgroundColor:
-                                Color.fromRGBO(
+                                backgroundColor: Color.fromRGBO(
                                   130,
                                   246,
                                   136,
@@ -121,6 +120,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                                       1.0,
                                     ),
                                   ),
+
                                 ),
                               ),
                             ),
@@ -139,7 +139,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                                 Text("⭐"),
                                 Text(
 
-                                  resturent.Stars_count.toString(),
+                                  restaurant.Stars_count.toString(),
                                   style: TextStyle(
                                     fontWeight:
                                     FontWeight.w700,
@@ -147,7 +147,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                                 ),
                                 SizedBox(width: 2),
                                 Text(
-                                  "(${resturent.Reviews_Count})",
+                                  "(${restaurant.Reviews_Count})",
                                   style: TextStyle(
                                     fontWeight:
                                     FontWeight.w700,
@@ -157,7 +157,7 @@ class CardDisplay extends GetView<ResturentListViewModel> {
                               ],
                             ),
                             Text(
-                              "Price :${resturent.Price_Range}",
+                              "Price :${restaurant.Price_Range}",
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                               ),

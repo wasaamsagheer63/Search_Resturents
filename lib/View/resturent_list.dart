@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:service_provider_finder/View/CardDisplay.dart';
-
-import '../ViewModel/ResturentListViewModel.dart';
-import '../models/Resturents.dart';
-import 'ListDisplay.dart';
+import 'package:service_provider_finder/View/card_display.dart';
+import '../view_model/resturent_list_view_model.dart';
+import 'list_display.dart';
 
 
 
-class ResturentList extends GetView<ResturentListViewModel> {
+class RestaurantList extends GetView<RestaurantListViewModel> {
   TextEditingController searchController = TextEditingController();
   static const IconData border_all_rounded = IconData(
     0xf5d3,
@@ -116,7 +113,7 @@ class ResturentList extends GetView<ResturentListViewModel> {
                             child: InkWell(
                               onTap: () {
                                 Get.toNamed("/filters");},
-                              onDoubleTap: () => controller.clearall(),
+                              onDoubleTap: () => controller.clearAll(),
                               child: Icon(
                                 Icons.tune,
                                 color: Colors.white,
@@ -137,7 +134,7 @@ class ResturentList extends GetView<ResturentListViewModel> {
                           ),
                           child: Icon(Icons.search, size: 20),
                         ),
-                        hintText: "Find Resturent....",
+                        hintText: "Find restaurant....",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -153,26 +150,25 @@ class ResturentList extends GetView<ResturentListViewModel> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.fromLTRB(5, 55, 5, 0),
-                    child:  controller.ListFood_Type.isEmpty
+                    child:  controller.listFoodType.isEmpty
                           ? Center(child: CircularProgressIndicator())
                           : SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: controller.ListFood_Type.map(
+                          children: controller.listFoodType.map(
                                 (item) => Container(
                               margin: EdgeInsets.only(left: 8),
 
                               child: InkWell(
                                 onTap: () {
 
-                                  controller.applyfoodfilter(
+                                  controller.applyFoodFilter(
                                     item.facetvalue!,
                                   );
 
                                 },
                                 child:
-                                controller
-                                    .SeletedFoodType.contains(
+                                controller.seletedFoodType.contains(
                                   item.facetvalue,
                                 )
                                     ? Chip(
@@ -269,7 +265,7 @@ class ResturentList extends GetView<ResturentListViewModel> {
                                 ),
                               ),
                               Text(
-                                "Nearby Resturents",
+                                "Nearby restaurants",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
@@ -344,22 +340,22 @@ class ResturentList extends GetView<ResturentListViewModel> {
                   ),
                 ],
               ),
-            ),controller.notfound()?Container(
+            ),controller.notFound()?Container(
               margin: EdgeInsets.only(top:30),
               child: Center(
                 child: Text("Not Found Any Result ....",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
               ),
             ):
-            controller.SearchList.isEmpty && !controller.filters()?
+            controller.searchList.isEmpty && !controller.filters()?
             Center(
               child: CircularProgressIndicator(),
             ):
             ListView.builder(
               shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: controller.SearchList.length,
+                itemCount: controller.searchList.length,
                 itemBuilder: ((context,index){
-              final item = controller.SearchList[index];
+              final item = controller.searchList[index];
               return controller.cardPage.value == true
                   ? CardDisplay(item,index)
                   :ListDisplay(item,index);})),

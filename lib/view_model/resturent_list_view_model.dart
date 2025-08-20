@@ -2,23 +2,22 @@ import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:service_provider_finder/Repository/algolia_repo.dart';
-import 'package:service_provider_finder/models/Resturents.dart';
-import 'package:service_provider_finder/models/facetList.dart';
+import 'package:service_provider_finder/models/facet_list.dart';
 
-class ResturentListViewModel extends GetxController {
+import '../models/resturents.dart';
+
+class RestaurantListViewModel extends GetxController {
   AlgoliaRepository algoliaRepository = Get.find();
   RxBool cardPage = true.obs;
   RxBool selectedPrice = true.obs;
-  late final HitsSearcher Searcher;
-  late final HitsSearcher Faceter;
+  late final HitsSearcher hitsSearcher;
   late final FilterState filterState;
   ScrollController scrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
-  var AllRatingsInt = <int>[].obs;
-  var RatingsList = <int>[].obs;
 
+bool run = true;
 
-  var SearchList = <Resturents>[].obs;
+  final searchList = <Restaurants>[].obs;
 
   final areaGroup = FilterGroupID('area', FilterOperator.or);
   final priceGroup = FilterGroupID('price_range', FilterOperator.and);
@@ -26,25 +25,30 @@ class ResturentListViewModel extends GetxController {
   final diningGroup = FilterGroupID('dining_style', FilterOperator.and);
   final foodGroup = FilterGroupID('food_type', FilterOperator.and);
 
-  var ListFood_Type = <FacetFoodList>[].obs;
-  var ListPrice_Range = <String>[].obs;
-  var ListDining_Style = <String>[].obs;
-  var ListArea = <String>[].obs;
-  var ListRating = <String>[].obs;
+  List<FacetFoodList> listFoodType = <FacetFoodList>[].obs;
+  List<String> listPriceRange = <String>[].obs;
+  List<String> listDiningStyle = <String>[].obs;
+  List<String> listArea = <String>[].obs;
+  List<String> listRating = <String>[].obs;
+  List<FacetFoodList> listFoodTypes = <FacetFoodList>[].obs;
+  List<String> listPriceRanges = <String>[].obs;
+  List<String> listDiningStyles = <String>[].obs;
+  List<String> listAreas = <String>[].obs;
+  List<String> listRatings = <String>[].obs;
 
-  var SeletedFoodType = <String>[].obs;
-  var SeletedAreaType = <String>[].obs;
-  var SeletedDiningType = <String>[].obs;
-  var SeletedPriceType = <String>[].obs;
-  var SeletedRatingType = <String>[].obs;
-  RxString queryofEditor = ''.obs;
+  List<String> seletedFoodType = <String>[].obs;
+  List<String> seletedAreaType = <String>[].obs;
+  List<String> seletedDiningType = <String>[].obs;
+  List<String> seletedPriceType = <String>[].obs;
+  List<String> seletedRatingType = <String>[].obs;
+  String queryofEditor = '';
 
-  var highlightedList = <Map<String, dynamic>>[].obs;
+  List<Map<String,dynamic>> highlightedList = <Map<String, dynamic>>[].obs;
 
-  var currentPage = 0.obs;
-  var totalPage = 0.obs;
-  var moreData = true.obs;
-  var loadingData = false.obs;
+  int currentPage = 0;
+  int totalPage = 0;
+  RxBool moreData = true.obs;
+  RxBool loadingData = false.obs;
   RxBool showMoreAreas = false.obs;
   RxBool showMoreRating = false.obs;
 
@@ -52,8 +56,7 @@ class ResturentListViewModel extends GetxController {
   void onInit() {
     super.onInit();
 
-    Searcher = algoliaRepository.searcher;
-    Faceter = algoliaRepository.facetor;
+    hitsSearcher = algoliaRepository.hitsSearcher;
     filterState = algoliaRepository.filterState;
 
     scrollController.addListener(() {
@@ -64,63 +67,72 @@ class ResturentListViewModel extends GetxController {
       }
     });
 
-    Searcher.responses.listen((response) {
-      if (currentPage.value == 0) {
-        SearchList.value = response.hits
-            .map((hit) => Resturents.fromMap(hit))
+    hitsSearcher.responses.listen((response) {
+      if (currentPage == 0) {
+        searchList.value = response.hits
+            .map((hit) => Restaurants.fromMap(hit))
             .toList();
-        highlightedList.value = response.hits;
+        highlightedList= response.hits;
       } else {
-        SearchList.addAll(
-          response.hits.map((hit) => Resturents.fromMap(hit)).toList(),
+        searchList.addAll(
+          response.hits.map((hit) => Restaurants.fromMap(hit)).toList(),
         );
         highlightedList.addAll(response.hits);
       }
 
-      totalPage.value = response.nbPages;
-      moreData.value = currentPage.value < totalPage.value - 1;
+      totalPage = response.nbPages;
+      moreData.value = currentPage < totalPage- 1;
       loadingData.value = false;
-    });
 
-    Faceter.responses.listen((response) {
-      ListFood_Type.value = response.facets['food_type']
+      listFoodTypes = response.facets['food_type']
           ?.map((facet) => FacetFoodList(facet.value, facet.count))
           .toList() ??
           [];
-      ListPrice_Range.value = response.facets['price_range']
+      listPriceRanges = response.facets['price_range']
           ?.map((facet) => facet.value)
           .toList() ??
           [];
-      ListRating.value = response.facets['stars_count']
+      listRatings = response.facets['stars_count']
           ?.map((facet) => facet.value)
           .toList() ??
           [];
-      ListDining_Style.value = response.facets['dining_style']
+      listDiningStyles = response.facets['dining_style']
           ?.map((facet) => facet.value)
           .toList() ??
           [];
-      ListArea.value = response.facets['area']
+      listAreas = response.facets['area']
           ?.map((facet) => facet.value)
           .toList() ??
           [];
+      if(run == true){
+        loadFacets();
+      }
+      run = false;
+
       // convertRatingtoNumbers();
       // discreteRatingValues();
     });
 
 
-    PerformSearch('');
-    LoadFacets();
+    performSearch('');
 
   }
+  void loadFacets(){
+    listFoodType.addAll(listFoodTypes);
+    listRating.addAll(listRatings);
+    listDiningStyle.addAll(listDiningStyles);
+    listArea.addAll(listAreas);
+    listPriceRange.addAll(listPriceRanges);
+  }
 
-  void PerformSearch(String query, {int page = 0}) {
-    currentPage.value = page;
-    queryofEditor.value = query;
+  void performSearch(String query, {int page = 0}) {
+    currentPage = page;
+    queryofEditor = query;
 
-    Searcher.query(query);
-    Searcher.applyState(
+    hitsSearcher.query(query);
+    hitsSearcher.applyState(
           (state) => state.copyWith(
-        page: page,
+        page: currentPage,
         attributesToHighlight: ['name'],
         highlightPreTag: '<em>',
         highlightPostTag: '</em>',
@@ -130,82 +142,68 @@ class ResturentListViewModel extends GetxController {
     );
   }
 
-  void LoadFacets() {
-    Faceter.applyState(
-          (state) => state.copyWith(
-        query: '',
-        facets: ['food_type', 'price_range', 'dining_style', 'area', 'stars_count'],
-      ),
-    );
-  }
-
   void clearArea() {
-    SeletedAreaType.clear();
+    seletedAreaType.clear();
     updateFacets();
   }
 
   void clearPrice() {
-    SeletedPriceType.clear();
+    seletedPriceType.clear();
     updateFacets();
   }
 
   void clearDining() {
-    SeletedDiningType.clear();
+    seletedDiningType.clear();
     updateFacets();
   }
 
   void clearFood() {
-    SeletedFoodType.clear();
+    seletedFoodType.clear();
     updateFacets();
   }
 
   void clearRating() {
-    SeletedRatingType.clear();
+    seletedRatingType.clear();
     updateFacets();
   }
 
-  void clearall() {
-    SeletedFoodType.clear();
-    SeletedAreaType.clear();
-    SeletedDiningType.clear();
-    SeletedPriceType.clear();
-    SeletedRatingType.clear();
+  void clearAll() {
+    seletedFoodType.clear();
+    seletedAreaType.clear();
+    seletedDiningType.clear();
+    seletedPriceType.clear();
+    seletedRatingType.clear();
     updateFacets();
   }
 
-  void applyAreafilter(String area) {
+  void applyAreaFilter(String area) {
     resetPagination();
-    if (SeletedAreaType.contains(area)) {
-      SeletedAreaType.remove(area);
+    if (seletedAreaType.contains(area)) {
+      seletedAreaType.remove(area);
     } else {
-      SeletedAreaType.add(area);
+      seletedAreaType.add(area);
     }
     updateFacets();
   }
 
-  void applyfoodfilter(String food) {
+  void applyFoodFilter(String food) {
     resetPagination();
-    if (SeletedFoodType.contains(food)) {
-      SeletedFoodType.remove(food);
+    if (seletedFoodType.contains(food)) {
+      seletedFoodType.remove(food);
     } else {
-      SeletedFoodType.clear();
-      SeletedFoodType.add(food);
+      seletedFoodType.clear();
+      seletedFoodType.add(food);
     }
-    print("following is Selected Food Type");
-    print(SeletedFoodType);
-    print("following is Search list after applying search");
-    SearchList.value.map((items) => print(items.Name)).toList();
-
     updateFacets();
   }
 
-  void applyPricefilter(String price) {
+  void applyPriceFilter(String price) {
     resetPagination();
-    if (SeletedPriceType.contains(price)) {
-      SeletedPriceType.remove(price);
+    if (seletedPriceType.contains(price)) {
+      seletedPriceType.remove(price);
     } else {
-      SeletedPriceType.clear();
-      SeletedPriceType.add(price);
+      seletedPriceType.clear();
+      seletedPriceType.add(price);
     }
     updateFacets();
   }
@@ -227,29 +225,29 @@ class ResturentListViewModel extends GetxController {
   //   updateFacets();
   // }
 
-  void applyRatingfilter(String area) {
+  void applyRatingFilter(String area) {
     resetPagination();
-    if (SeletedRatingType.contains(area)) {
-      SeletedRatingType.remove(area);
+    if (seletedRatingType.contains(area)) {
+      seletedRatingType.remove(area);
     } else {
-      SeletedRatingType.add(area);
+      seletedRatingType.add(area);
     }
     updateFacets();
   }
 
-  void applyDinningfilter(String dining) {
+  void applyDinningFilter(String dining) {
     resetPagination();
-    if (SeletedDiningType.contains(dining)) {
-      SeletedDiningType.remove(dining);
+    if (seletedDiningType.contains(dining)) {
+      seletedDiningType.remove(dining);
     } else {
-      SeletedDiningType.clear();
-      SeletedDiningType.add(dining);
+      seletedDiningType.clear();
+      seletedDiningType.add(dining);
     }
     updateFacets();
   }
 
   void searchEditor(String query) {
-    queryofEditor.value = query;
+    queryofEditor= query;
     resetPagination();
     updateFacets();
   }
@@ -257,23 +255,23 @@ class ResturentListViewModel extends GetxController {
   void loadMoreData() {
     if (moreData.value == true && !loadingData.value) {
       loadingData.value = true;
-      PerformSearch(queryofEditor.value, page: currentPage.value + 1);
+      performSearch(queryofEditor, page: currentPage + 1);
     }
   }
 
   void resetPagination() {
-    currentPage.value = 0;
+    currentPage = 0;
     loadingData.value = false;
     moreData.value = true;
-    totalPage.value = 0;
+    totalPage = 0;
   }
 
   bool filters() {
-    return SeletedPriceType.isNotEmpty ||
-        SeletedFoodType.isNotEmpty ||
-        SeletedRatingType.isNotEmpty ||
-        SeletedAreaType.isNotEmpty ||
-        SeletedDiningType.isNotEmpty;
+    return seletedPriceType.isNotEmpty ||
+        seletedFoodType.isNotEmpty ||
+        seletedRatingType.isNotEmpty ||
+        seletedAreaType.isNotEmpty ||
+        seletedDiningType.isNotEmpty;
   }
 
   void showArea() {
@@ -287,43 +285,43 @@ class ResturentListViewModel extends GetxController {
   void updateFacets() {
     filterState.clear();
 
-    if (SeletedAreaType.isNotEmpty) {
-      List<Filter> areaFilters = SeletedAreaType
+    if (seletedAreaType.isNotEmpty) {
+      List<Filter> areaFilters = seletedAreaType
           .map((area) => Filter.facet('area', area))
           .toList();
       filterState.add(areaGroup, areaFilters);
     }
 
-    if (SeletedPriceType.isNotEmpty) {
-      List<Filter> priceFilters = SeletedPriceType
+    if (seletedPriceType.isNotEmpty) {
+      List<Filter> priceFilters = seletedPriceType
           .map((price) => Filter.facet('price_range', price))
           .toList();
       filterState.add(priceGroup, priceFilters);
     }
 
-    if (SeletedRatingType.isNotEmpty) {
-      List<Filter> ratingFilters = SeletedRatingType
+    if (seletedRatingType.isNotEmpty) {
+      List<Filter> ratingFilters = seletedRatingType
           .map((rating) => Filter.facet('stars_count', rating))
           .toList();
       filterState.add(ratingGroup, ratingFilters);
     }
 
-    if (SeletedDiningType.isNotEmpty) {
-      List<Filter> diningFilters = SeletedDiningType
+    if (seletedDiningType.isNotEmpty) {
+      List<Filter> diningFilters = seletedDiningType
           .map((dining) => Filter.facet('dining_style', dining))
           .toList();
       filterState.add(diningGroup, diningFilters);
     }
 
-    if (SeletedFoodType.isNotEmpty) {
-      List<Filter> foodFilters = SeletedFoodType
+    if (seletedFoodType.isNotEmpty) {
+      List<Filter> foodFilters = seletedFoodType
           .map((food) => Filter.facet('food_type', food))
           .toList();
       filterState.add(foodGroup, foodFilters);
     }
 
 
-    PerformSearch(queryofEditor.value, page: currentPage.value);
+    performSearch(queryofEditor, page: currentPage);
   }
 
   @override
@@ -346,8 +344,8 @@ class ResturentListViewModel extends GetxController {
 //     print("following is list of rating in Int");
 //     print(RatingsList);
 //   }
-bool notfound(){
-    if(SearchList.isEmpty && filters()){
+bool notFound(){
+    if(searchList.isEmpty && filters()){
       return true;
     }
     else{

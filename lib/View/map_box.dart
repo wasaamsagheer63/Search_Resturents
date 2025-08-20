@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart' hide Marker;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:service_provider_finder/View/resturentlist.dart';
-import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
-import 'package:service_provider_finder/ViewModel/MapViewModel.dart';
-import 'package:service_provider_finder/models/Resturents.dart';
+
+import '../view_model/map_view_model.dart';
+import '../view_model/resturent_list_view_model.dart';
 
 
 
 class MapBox extends GetView<MapViewModel> {
-   final ResturentListViewModel resturentListViewModel=Get.find<ResturentListViewModel>();
+   final RestaurantListViewModel restaurantListViewModel=Get.find<RestaurantListViewModel>();
   @override
 
 
@@ -32,7 +30,7 @@ class MapBox extends GetView<MapViewModel> {
               width: 300,
               decoration: BoxDecoration(),
               child: Text(
-                "Nearby Resturents",
+                "Nearby restaurants",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
@@ -49,11 +47,11 @@ class MapBox extends GetView<MapViewModel> {
            return FlutterMap(
             mapController: controller.mapController,
             options: MapOptions(
-              initialCenter: resturentListViewModel.SearchList.isNotEmpty ? LatLng(resturentListViewModel.SearchList.first.geoloc.lat.toDouble(),
-                  resturentListViewModel.SearchList.first.geoloc.lng.toDouble()):LatLng(0, 0),
-              initialZoom:5,
+              initialCenter: restaurantListViewModel.searchList.isNotEmpty ? LatLng(restaurantListViewModel.searchList.first.geoloc.lat.toDouble(),
+                  restaurantListViewModel.searchList.first.geoloc.lng.toDouble()):LatLng(0, 0),
+              initialZoom:4,
               maxZoom: 18,
-              minZoom: 1,
+              minZoom: 2,
             ),
 
             children: [
@@ -61,13 +59,13 @@ class MapBox extends GetView<MapViewModel> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               MarkerLayer(
-                  markers: resturentListViewModel.SearchList.map((map) {
+                  markers: restaurantListViewModel.searchList.map((map) {
                     return Marker(
                       width: 130,
                       height: 40,
                       point: LatLng(
-                        map.geoloc.lat.toDouble(),
-                        map.geoloc.lng.toDouble(),
+                        map.geoloc.lat,
+                        map.geoloc.lng,
                       ),
                       child: InkWell(
                         onTap: () {
@@ -145,7 +143,7 @@ class MapBox extends GetView<MapViewModel> {
                                     width:
                                         MediaQuery.of(context).size.width * 0.3,
                                     child: Text(
-                                      controller.SelectedResturent.value?.Name ?? " ",
+                                      controller.Selectedrestaurant.value?.Name ?? " ",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w900,
@@ -156,7 +154,7 @@ class MapBox extends GetView<MapViewModel> {
                                     height: 35,
                                     child: Chip(
                                       label: Text(
-                                        controller.SelectedResturent.value?.Food_Type ?? "",
+                                        controller.Selectedrestaurant.value?.Food_Type ?? "",
                                         style: TextStyle(
                                           color: Color.fromRGBO(9, 53, 1, 1.0),
                                           fontWeight: FontWeight.w700,
@@ -193,14 +191,14 @@ class MapBox extends GetView<MapViewModel> {
                                   children: [
                                     Text("⭐"),
                                     Text(
-                                      controller.SelectedResturent.value?.Stars_count.toString() ?? "",
+                                      controller.Selectedrestaurant.value?.Stars_count.toString() ?? "",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     SizedBox(width: 2),
                                     Text(
-                                      "(${controller.SelectedResturent.value?.Reviews_Count ?? ""})",
+                                      "(${controller.Selectedrestaurant.value?.Reviews_Count ?? ""})",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.grey,
@@ -209,7 +207,7 @@ class MapBox extends GetView<MapViewModel> {
                                   ],
                                 ),
                                 Text(
-                                  "Price :${controller.SelectedResturent.value?.Price_Range ?? ""}",
+                                  "Price :${controller.Selectedrestaurant.value?.Price_Range ?? ""}",
                                   style: TextStyle(fontWeight: FontWeight.w700),
                                 ),
                               ],
@@ -233,7 +231,7 @@ class MapBox extends GetView<MapViewModel> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        Get.toNamed("/ResturentList");
+                        Get.toNamed("/restaurantList");
                       },
                       child: Icon(Icons.list, color: Colors.white),
                     ),
