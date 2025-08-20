@@ -14,12 +14,15 @@ class ResturentListViewModel extends GetxController {
   late final FilterState filterState;
   ScrollController scrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
+  var AllRatingsInt = <int>[].obs;
+  var RatingsList = <int>[].obs;
+
 
   var SearchList = <Resturents>[].obs;
 
   final areaGroup = FilterGroupID('area', FilterOperator.or);
   final priceGroup = FilterGroupID('price_range', FilterOperator.and);
-  final ratingGroup = FilterGroupID('stars_count', FilterOperator.and);
+  final ratingGroup = FilterGroupID('stars_count', FilterOperator.or);
   final diningGroup = FilterGroupID('dining_style', FilterOperator.and);
   final foodGroup = FilterGroupID('food_type', FilterOperator.and);
 
@@ -56,7 +59,7 @@ class ResturentListViewModel extends GetxController {
     scrollController.addListener(() {
       if (!scrollController.hasClients) return;
       if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 200) {
+          scrollController.position.maxScrollExtent - 500) {
         loadMoreData();
       }
     });
@@ -100,11 +103,14 @@ class ResturentListViewModel extends GetxController {
           ?.map((facet) => facet.value)
           .toList() ??
           [];
+      // convertRatingtoNumbers();
+      // discreteRatingValues();
     });
 
 
     PerformSearch('');
     LoadFacets();
+
   }
 
   void PerformSearch(String query, {int page = 0}) {
@@ -185,6 +191,11 @@ class ResturentListViewModel extends GetxController {
       SeletedFoodType.clear();
       SeletedFoodType.add(food);
     }
+    print("following is Selected Food Type");
+    print(SeletedFoodType);
+    print("following is Search list after applying search");
+    SearchList.value.map((items) => print(items.Name)).toList();
+
     updateFacets();
   }
 
@@ -198,14 +209,30 @@ class ResturentListViewModel extends GetxController {
     }
     updateFacets();
   }
+// bool isRatingSelected(int rating){
+//     return SeletedRatingType.any((r_value) => double.tryParse(r_value)?.round() == rating);
+// }
+  // void applyRatingfilter(int rating) {
+  //   resetPagination();
+  //   if(isRatingSelected(rating)){
+  //    SeletedRatingType.removeWhere((item) => double.tryParse(item)?.round() == rating);
+  //   }
+  //   else{
+  //   for(var ratings in ListRating){
+  //     if(double.tryParse(ratings)?.round() == rating){
+  //       SeletedRatingType.value.add(ratings);}
+  //     }
+  //   }
+  //   SeletedRatingType.refresh();
+  //   updateFacets();
+  // }
 
-  void applyRatingfilter(String rating) {
+  void applyRatingfilter(String area) {
     resetPagination();
-    if (SeletedRatingType.contains(rating)) {
-      SeletedRatingType.remove(rating);
+    if (SeletedRatingType.contains(area)) {
+      SeletedRatingType.remove(area);
     } else {
-      SeletedRatingType.clear();
-      SeletedRatingType.add(rating);
+      SeletedRatingType.add(area);
     }
     updateFacets();
   }
@@ -305,4 +332,28 @@ class ResturentListViewModel extends GetxController {
     searchController.dispose();
     super.dispose();
   }
+//   void convertRatingtoNumbers(){
+//     AllRatingsInt.value = ListRating.value.map((item) => double.tryParse(item)!.round()).toList();
+//     print("following is list of rating");
+//     print(AllRatingsInt);
+// }
+//   void discreteRatingValues(){
+//     for(var r_value in AllRatingsInt){
+//       if(!RatingsList.contains(r_value)){
+//         RatingsList.value.add(r_value);
+//       }
+//     }
+//     print("following is list of rating in Int");
+//     print(RatingsList);
+//   }
+bool notfound(){
+    if(SearchList.isEmpty && filters()){
+      return true;
+    }
+    else{
+      return false;
+    }
+}
+
+
 }

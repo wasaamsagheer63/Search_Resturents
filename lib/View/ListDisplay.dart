@@ -65,6 +65,7 @@ class ListDisplay extends GetView<ResturentListViewModel> {
                     ],
                   )])),
                    Column(
+                     spacing: 5,
                     children: [
                       Chip(
                         label: Text(resturent.Food_Type),

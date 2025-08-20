@@ -23,7 +23,7 @@ static Resturents fromMap(Map<String, dynamic> map) {
   return Resturents(
     map['name'] ?? "",
     map['food_type'] ?? "",
-    map['stars_count'] ?? 0,
+      (map['stars_count'] ?? 0.0).toDouble(),
     map['reviews_count'] ?? 0,
     map['price_range'] ?? "",
     map['dining_style'] ?? "",

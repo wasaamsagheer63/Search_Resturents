@@ -31,7 +31,6 @@ class ResturentList extends GetView<ResturentListViewModel> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -243,7 +242,7 @@ class ResturentList extends GetView<ResturentListViewModel> {
                               InkWell(
                                 onTap: () {
 
-                                  Get.offAllNamed("/Map");
+                                  Get.toNamed("/Map");
 
                                 },
                                 child: Stack(
@@ -345,8 +344,13 @@ class ResturentList extends GetView<ResturentListViewModel> {
                   ),
                 ],
               ),
-            ),
-            controller.SearchList.isEmpty?
+            ),controller.notfound()?Container(
+              margin: EdgeInsets.only(top:30),
+              child: Center(
+                child: Text("Not Found Any Result ....",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+              ),
+            ):
+            controller.SearchList.isEmpty && !controller.filters()?
             Center(
               child: CircularProgressIndicator(),
             ):
@@ -358,7 +362,11 @@ class ResturentList extends GetView<ResturentListViewModel> {
               final item = controller.SearchList[index];
               return controller.cardPage.value == true
                   ? CardDisplay(item,index)
-                  :ListDisplay(item,index);}))]));
+                  :ListDisplay(item,index);})),
+          controller.loadingData.value?Container(
+            margin: EdgeInsets.symmetric(vertical:50),
+              child: CircularProgressIndicator(color: Colors.green,strokeWidth: 5,)):SizedBox.shrink()
+          ]));
 
     }),
     );

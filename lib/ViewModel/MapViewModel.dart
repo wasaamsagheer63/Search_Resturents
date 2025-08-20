@@ -8,7 +8,7 @@ import '../models/Resturents.dart';
 
 
 class MapViewModel extends GetxController{
-  ResturentListViewModel mapSearchGoogleViewModel = Get.find();
+  ResturentListViewModel resturentListViewModel = Get.find();
   MapController mapController = MapController();
   RxBool showcard = false.obs;
    Rx<Resturents?> SelectedResturent  = Rx<Resturents?>(null);
@@ -18,7 +18,7 @@ class MapViewModel extends GetxController{
 
   void onInit(){
     super.onInit();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    resturentListViewModel.SearchList.listen((_) {
       pointToTargets();
     });
   }
@@ -27,15 +27,15 @@ class MapViewModel extends GetxController{
   }
 
   void pointToTargets(){
-    if(mapSearchGoogleViewModel.SearchList.isEmpty){
+    if(resturentListViewModel.SearchList.isEmpty){
       return ;
     }
-    List<LatLng> markPositions = mapSearchGoogleViewModel.SearchList.map((map){
+    List<LatLng> markPositions = resturentListViewModel.SearchList.map((map){
       return LatLng(map.geoloc.lat.toDouble(), map.geoloc.lng.toDouble());
     }).toList();
 
     if(markPositions.length ==1){
-      mapController.move(markPositions.first,80.0);
+      mapController.move(markPositions.first,15.0);
     }
     else{
          double minlat=  markPositions.first.latitude;
@@ -55,7 +55,9 @@ class MapViewModel extends GetxController{
       LatLng(maxlat,maxlng)
     );
          mapController.fitCamera(CameraFit.bounds(bounds: bounds,
-         padding: EdgeInsets.all(50.0)));
+
+         padding: EdgeInsets.all(50.0),
+         ));
 
 
     }

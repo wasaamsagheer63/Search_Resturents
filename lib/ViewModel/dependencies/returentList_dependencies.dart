@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:service_provider_finder/ViewModel/ResturentListViewModel.dart';
 
 import '../../Repository/algolia_repo.dart';
+import '../MapViewModel.dart';
 
 class ReturentlistViewDependencies extends Bindings{
   @override

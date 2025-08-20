@@ -10,9 +10,8 @@ import 'package:service_provider_finder/models/Resturents.dart';
 
 
 
-class MapBox extends StatelessWidget {
+class MapBox extends GetView<MapViewModel> {
    final ResturentListViewModel resturentListViewModel=Get.find<ResturentListViewModel>();
-  final  MapViewModel mapViewModel = Get.find<MapViewModel>();
   @override
 
 
@@ -46,20 +45,22 @@ class MapBox extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          FlutterMap(
-            mapController: mapViewModel.mapController,
+         Obx((){
+           return FlutterMap(
+            mapController: controller.mapController,
             options: MapOptions(
-              initialCenter: LatLng(0, 0),
-              initialZoom: 2, // Start with a reasonable zoom level
+              initialCenter: resturentListViewModel.SearchList.isNotEmpty ? LatLng(resturentListViewModel.SearchList.first.geoloc.lat.toDouble(),
+                  resturentListViewModel.SearchList.first.geoloc.lng.toDouble()):LatLng(0, 0),
+              initialZoom:5,
               maxZoom: 18,
+              minZoom: 1,
             ),
 
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
-              Obx((){
-                return MarkerLayer(
+              MarkerLayer(
                   markers: resturentListViewModel.SearchList.map((map) {
                     return Marker(
                       width: 130,
@@ -70,9 +71,9 @@ class MapBox extends StatelessWidget {
                       ),
                       child: InkWell(
                         onTap: () {
-                          mapViewModel.detail(map);
-                          if (!mapViewModel.showcard.value) {
-                            mapViewModel.showcard.value = true;
+                          controller.detail(map);
+                          if (!controller.showcard.value) {
+                            controller.showcard.value = true;
                           }
 
                         },
@@ -87,11 +88,11 @@ class MapBox extends StatelessWidget {
                       ),
                     );
                   }).toList(),
-                );})
+                )
             ],
-          ),
+           );}),
                Obx(() {
-                return            mapViewModel.showcard.value == true?
+                return            controller.showcard.value == true?
                 Positioned(
                   bottom: 20,
                   left: 10,
@@ -123,7 +124,7 @@ class MapBox extends StatelessWidget {
                                 child: InkWell(
                                   onTap: () {
 
-                                    mapViewModel.showcard.value = false;
+                                    controller.showcard.value = false;
 
                                   },
                                   child: Image.network(
@@ -144,7 +145,7 @@ class MapBox extends StatelessWidget {
                                     width:
                                         MediaQuery.of(context).size.width * 0.3,
                                     child: Text(
-                                      mapViewModel.SelectedResturent.value?.Name ?? " ",
+                                      controller.SelectedResturent.value?.Name ?? " ",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w900,
@@ -155,7 +156,7 @@ class MapBox extends StatelessWidget {
                                     height: 35,
                                     child: Chip(
                                       label: Text(
-                                        mapViewModel.SelectedResturent.value?.Food_Type ?? "",
+                                        controller.SelectedResturent.value?.Food_Type ?? "",
                                         style: TextStyle(
                                           color: Color.fromRGBO(9, 53, 1, 1.0),
                                           fontWeight: FontWeight.w700,
@@ -192,14 +193,14 @@ class MapBox extends StatelessWidget {
                                   children: [
                                     Text("⭐"),
                                     Text(
-                                      mapViewModel.SelectedResturent.value?.Stars_count.toString() ?? "",
+                                      controller.SelectedResturent.value?.Stars_count.toString() ?? "",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     SizedBox(width: 2),
                                     Text(
-                                      "(${mapViewModel.SelectedResturent.value?.Reviews_Count ?? ""})",
+                                      "(${controller.SelectedResturent.value?.Reviews_Count ?? ""})",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.grey,
@@ -208,7 +209,7 @@ class MapBox extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "Price :${mapViewModel.SelectedResturent.value?.Price_Range ?? ""}",
+                                  "Price :${controller.SelectedResturent.value?.Price_Range ?? ""}",
                                   style: TextStyle(fontWeight: FontWeight.w700),
                                 ),
                               ],
