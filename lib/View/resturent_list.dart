@@ -357,8 +357,8 @@ class RestaurantList extends GetView<RestaurantListViewModel> {
                 itemBuilder: ((context,index){
               final item = controller.searchList[index];
               return controller.cardPage.value == true
-                  ? CardDisplay(item,index)
-                  :ListDisplay(item,index);})),
+                  ? CardDisplay(restaurant: item,index: index,)
+                  :ListDisplay(restaurant: item,index: index,);})),
           controller.loadingData.value?Container(
             margin: EdgeInsets.symmetric(vertical:50),
               child: CircularProgressIndicator(color: Colors.green,strokeWidth: 5,)):SizedBox.shrink()

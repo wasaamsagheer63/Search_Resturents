@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:service_provider_finder/Repository/algolia_repo.dart';
 import 'package:service_provider_finder/models/facet_list.dart';
 
-import '../models/resturents.dart';
+import '../models/restaurant.dart';
 
 class RestaurantListViewModel extends GetxController {
   AlgoliaRepository algoliaRepository = Get.find();

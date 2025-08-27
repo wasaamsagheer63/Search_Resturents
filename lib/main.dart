@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:service_provider_finder/View/filters.dart';
-import 'package:service_provider_finder/View/map_box.dart';
+import 'package:service_provider_finder/View/map_display.dart';
 import 'package:service_provider_finder/view_model/dependencies/map_dependencies.dart';
 import 'package:service_provider_finder/view_model/dependencies/returent_List_dependencies.dart';
 

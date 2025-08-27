@@ -2,26 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 
-import '../models/resturents.dart';
+import '../models/restaurant.dart';
 import '../view_model/resturent_list_view_model.dart';
 
 class CardDisplay extends GetView<RestaurantListViewModel> {
-  Restaurants restaurant;
-  int index;
+   final Restaurants restaurant;
+   final int index;
 
-
-  CardDisplay(this.restaurant,this.index);
+   CardDisplay({super.key, required this.restaurant ,required this.index});
 
   @override
   Widget build(BuildContext context) {
     return  Card(
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height:100,
                         child: Stack(
                           children: [
-                            Container(
+                            SizedBox(
                               height: 85,
                               width: double.infinity,
                               child: ClipRRect(
@@ -82,7 +81,7 @@ class CardDisplay extends GetView<RestaurantListViewModel> {
                                 },
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               height: 35,
                               child: Chip(
                                 label: Text(
@@ -173,3 +172,4 @@ class CardDisplay extends GetView<RestaurantListViewModel> {
   }
 
 }
+

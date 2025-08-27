@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import '../models/resturents.dart';
+import '../models/restaurant.dart';
 import '../view_model/resturent_list_view_model.dart';
 
 class ListDisplay extends GetView<RestaurantListViewModel> {
@@ -9,7 +9,7 @@ class ListDisplay extends GetView<RestaurantListViewModel> {
   int index;
 
 
-  ListDisplay(this.restaurant, this.index);
+  ListDisplay({ super.key, required this.restaurant, required this.index});
 
   @override
   Widget build(BuildContext context) {

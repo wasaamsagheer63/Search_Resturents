@@ -231,7 +231,7 @@ class MapBox extends GetView<MapViewModel> {
                     ),
                     child: InkWell(
                       onTap: () {
-                        Get.toNamed("/restaurantList");
+                        Get.offAllNamed("/restaurantList");
                       },
                       child: Icon(Icons.list, color: Colors.white),
                     ),

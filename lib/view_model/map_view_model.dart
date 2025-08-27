@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:service_provider_finder/view_model/resturent_list_view_model.dart';
-import '../models/resturents.dart';
+import '../models/restaurant.dart';
 
 
 class MapViewModel extends GetxController{
@@ -60,5 +60,10 @@ class MapViewModel extends GetxController{
 
 
     }
+  }
+  void dispose(){
+    super.dispose();
+    mapController.dispose();
+
   }
 }
